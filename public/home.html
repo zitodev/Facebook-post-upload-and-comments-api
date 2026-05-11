@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <h1>Welcome to Zito Post Feed</h1><br><br>
+
+    <p>Add Post <a href="post.html">Here</a></p>
+    
+    <h2>New Post Here</h2>
+    <div id="post"></div>
+
+    <script>
+        async function fetchPost(){
+            try {
+                const response = await fetch('api/posts/posts', {
+                    method: 'GET',
+                    credentials: 'include'
+                });
+                if(response.ok){
+                    const data = await response.json();
+                    const posts = data.posts;
+                    const postList = document.getElementById('post');
+                    postList.innerHTML = '';
+
+                    posts.forEach(post => {
+                        const postItem = document.createElement('div');
+                        postItem.innerHTML = `
+                        <h3>${post.user.name}</h3>
+                        <p>${post.content}</p>
+                        ${post.image ? `<img src="${post.image}" alt="image file" width = 200px>` : ''}
+                        <p><a href="comment.html?id=${post._id}">View Comments</a> || <a href="addComment.html?id=${post._id}">Add Comment</a></p>
+                        `;
+
+                        postList.appendChild(postItem);
+
+                    });
+
+                }else{
+                    alert('failed to load post')
+                }
+            } catch (error) {
+                console.error(error)
+                alert('an error has occurred')
+                
+            }
+        }
+
+        fetchPost();
+        
+
+
+    </script>
+
+</body>
+</html>

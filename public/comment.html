@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <h1>Welcome to Zito Post Feed</h1><br><br>
+    
+    <h2>New Comments Here</h2>
+    <div id="comment"></div>
+
+    <script>
+        // get post id from url
+        const params = new URLSearchParams(window.location.search);
+        const postId = params.get("id");
+        
+        async function fetchComment(){
+            try {
+                const response = await fetch(`http://localhost:3000/api/posts/comments/${postId}`, {
+                    method: 'GET',
+                    credentials: 'include'
+                });
+                if(response.ok){
+                    const data = await response.json();
+                    
+                    const comments = data.comments;
+                    const commentList = document.getElementById('comment');
+                    commentList.innerHTML = '';
+
+                    comments.forEach(comment => {
+                        const commentItem = document.createElement('div');
+                        commentItem.innerHTML = `
+                        <h3>${comment.user.name}</h3>
+                        <p>${comment.post.content}</p>
+                        <p>${comment.comment}</p>
+                        `;
+
+                        commentList.appendChild(commentItem);
+
+                    });
+
+                }else{
+                    alert('failed to load comment')
+                }
+            } catch (error) {
+                console.error(error)
+                alert('an error has occurred')
+                
+            }
+        }
+
+        fetchComment();
+        
+
+
+    </script>
+
+</body>
+</html>

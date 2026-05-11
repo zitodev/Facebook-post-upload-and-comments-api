@@ -1,0 +1,43 @@
+<h2>Add Comments</h2>
+
+<form id="addProductForm" enctype="multipart/form-data">
+  <label for="content">Comment:</label>
+  <input type="text" id="content" name="comment" required><br><br>
+
+  <button type="submit">Add Comment</button>
+</form>
+
+<script>
+   // get post id from url
+  const params = new URLSearchParams(window.location.search);
+  const postId = params.get("id");
+
+
+  document.getElementById('addProductForm').addEventListener('submit', async (e) => {
+    e.preventDefault();
+
+    const formData = new FormData();
+    formData.append('comment', document.getElementById('content').value);    
+
+    try {
+      const response = await fetch(`http://localhost:3000/api/posts/create-comment/${postId}`, {
+        method: 'POST',
+        credentials: 'include',
+        body: formData
+      });
+
+      const data = await response.json();
+      if (response.ok) {
+        alert('Comment added sucscessfully');
+        window.location.href = `comment.html?id=${postId}`;
+      } else {
+        alert('Failed to add comment');
+        console.log('error message', data.message);
+      }
+    } catch (error) {
+      console.log('error message', error);
+      
+      alert('An error occurred while adding the comment');
+    }
+  });
+</script>
